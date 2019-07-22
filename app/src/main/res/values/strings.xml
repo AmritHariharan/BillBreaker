@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BillBreaker</string>
+    <string name="title_activity_take_photo">TakePhoto</string>
 </resources>
