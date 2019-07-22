@@ -2,12 +2,15 @@ package com.billbreaker;
 
 import java.io.Serializable;
 
+/**
+ * Data class to hold name of the person and the price the person needs to pay for the receipt
+ */
 class PersonalReceiptItem implements Serializable {
 
-    String name;
-    double price;
+    private String name;
+    private double price;
 
-    public PersonalReceiptItem(String name, double price) {
+    PersonalReceiptItem(String name, double price) {
         this.name = name;
         this.price = price;
     }

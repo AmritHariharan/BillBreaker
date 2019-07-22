@@ -2,15 +2,25 @@ package com.billbreaker;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
-public class ReceiptDatabase extends SQLiteOpenHelper {
+/**
+ * Database to hold personal receipt items per transaction. Each transaction will have a list of
+ * personal receipt items. Currently, data will be deleted every 90 days.
+ */
+class ReceiptDatabase extends SQLiteOpenHelper {
     private static final String RECEIPT_TABLE_NAME = "RECEIPT";
 
     ReceiptDatabase(Context context) {
@@ -25,6 +35,7 @@ public class ReceiptDatabase extends SQLiteOpenHelper {
                         + RECEIPT_TABLE_NAME
                         + "("
                         + "RECEIPT BLOB"
+                        + ", TIMESTAMP BIGINT"
                         + ")");
     }
 
@@ -33,23 +44,120 @@ public class ReceiptDatabase extends SQLiteOpenHelper {
         throw new IllegalStateException();
     }
 
-    public void putReceipt(List<PersonalReceiptItem> receipt) {
+    /**
+     * Adds a receipt to the database by storing the list of personal receipt items. The timestamp
+     * is added here in order to keep track of auto deletion after it expires
+     */
+    void putReceipt(List<PersonalReceiptItem> receipt) {
         SQLiteDatabase db = getWritableDatabase();
         try {
+            byte[] receiptBytes = serializeReceipt(receipt);
+            long timestamp = getTimestamp();
+
             db.beginTransaction();
             ContentValues values = new ContentValues();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(receipt);
-            byte[] bytes = bos.toByteArray();
-            values.put("RECEIPT", bytes);
+            values.put("RECEIPT", receiptBytes);
+            values.put("TIMESTAMP", timestamp);
             db.insertOrThrow(RECEIPT_TABLE_NAME, null, values);
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Log.e("TEST", e.getMessage());
-            // TODO error
+            e.printStackTrace();
         } finally {
             db.endTransaction();
         }
+    }
+
+    /**
+     * Retrieves all receipts for the user in the form of lists of personal receipt items
+     */
+    List<List<PersonalReceiptItem>> getAllReceipts() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor =
+                db.query(RECEIPT_TABLE_NAME, // The table to query
+                        null, // // The values for the WHERE clause
+                        null, // The columns for the WHERE clause
+                        null, // The values for the WHERE clause
+                        null, // don't group the rows
+                        null, // don't filter by row groups
+                        null // The sort order (default ASC)
+                );
+        try {
+            List<List<PersonalReceiptItem>> receipt = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                byte[] personalReceiptItem = cursor.getBlob(0);
+                List<PersonalReceiptItem> personalReceiptItems = deserializeReceipt(personalReceiptItem);
+                receipt.add(personalReceiptItems);
+            }
+            return receipt;
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /** Deletes all entries from the database that is > 90 days old */
+    void deleteOldEntries() {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.beginTransaction();
+
+            String whereClause = "TIMESTAMP < ?";
+            String[] whereArgs = {String.valueOf(getTimestamp90DaysAgo())};
+
+            db.delete(RECEIPT_TABLE_NAME, whereClause, whereArgs);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Retrieve timestamp 90 days ago to be used for deletion
+     */
+    private long getTimestamp90DaysAgo() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.add(Calendar.DATE, -90);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * Retrieve timestamp for the current time
+     */
+    private long getTimestamp() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * Serialize the receipt to be a byte array as SQLite blobs only takes byte arrays
+     */
+    private byte[] serializeReceipt(List<PersonalReceiptItem> receipt) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(receipt);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Deserialize the byte array back into a list of personal receipt items
+     */
+    private List<PersonalReceiptItem> deserializeReceipt(byte[] receiptBytes) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(receiptBytes);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return (List<PersonalReceiptItem>) objectInputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
