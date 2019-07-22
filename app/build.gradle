@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "AZURE_COGNITION_KEY", "\""+getAzureCognitionKey()+"\""
     }
     buildTypes {
         release {
@@ -27,4 +28,17 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.material:material:1.0.0-rc01'
+}
+
+def getAzureCognitionKey() {
+    Properties properties = new Properties()
+    String azureCognitionKey = null
+    if (project.rootProject.file('local.properties').exists()) {
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        azureCognitionKey = properties.getProperty("azureCognitionKey")
+    }
+    if (!azureCognitionKey) {
+        throw new Exception('azureCognitionKey not found in local.properties file.')
+    }
+    return azureCognitionKey
 }
