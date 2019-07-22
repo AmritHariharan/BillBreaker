@@ -2,7 +2,8 @@ package com.billbreaker;
 
 import android.media.Image;
 
-import org.apache.http.HttpEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -13,12 +14,14 @@ import org.apache.http.util.EntityUtils;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 class ReceiptProcessor {
 
-    private static void getItemsFromImage(Image receipt) { // FIXME: actually return something lmao
+    private static ResponseBody getItemsFromImage(Image receipt) { // FIXME: actually return something lmao
         HttpClient httpclient = HttpClients.createDefault();
+        ObjectMapper mapper = new ObjectMapper();
         try {
             URIBuilder builder = new URIBuilder("https://westus.api.cognitive.microsoft.com/vision/v2.0/ocr");
 
@@ -32,22 +35,35 @@ class ReceiptProcessor {
             request.setHeader("Ocp-Apim-Subscription-Key", BuildConfig.AZURE_COGNITION_KEY);
 
             // Request body
-            StringEntity reqEntity = new StringEntity("{body}");
+            StringEntity reqEntity = new StringEntity("{body}"); // TODO: this...
             request.setEntity(reqEntity);
 
-            HttpResponse response = httpclient.execute(request);
-            HttpEntity entity = response.getEntity();
+            // Response
+            HttpResponse httpResponse = httpclient.execute(request);
+            String jsonResponse = EntityUtils.toString(httpResponse.getEntity());
 
-            if (entity != null) {
-                System.out.println(EntityUtils.toString(entity));
-            }
+            return mapper.readValue(jsonResponse, ResponseBody.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     static List<ReceiptItem> processItems(Image receipt) {
-        getItemsFromImage(receipt);
-        return new ArrayList<ReceiptItem>();
+        ResponseBody responseBody = getItemsFromImage(receipt);
+
+        if (responseBody.regions.size() != 2) {
+            throw new RuntimeException("Incorrect number of regions in response body, should be 2");
+        }
+
+        List<ReceiptItem> items;
+
+        Iterator name = responseBody.regions.get(0).lines.iterator();
+        Iterator price = responseBody.regions.get(1).lines.iterator();
+
+        while (name.hasNext() && price.hasNext()) {
+
+        }
+
+        return items;
     }
 }
