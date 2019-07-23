@@ -45,6 +45,7 @@ class ReceiptProcessor {
             return mapper.readValue(jsonResponse, ResponseBody.class);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseBody();
         }
     }
 
@@ -55,14 +56,12 @@ class ReceiptProcessor {
             throw new RuntimeException("Incorrect number of regions in response body, should be 2");
         }
 
-        List<ReceiptItem> items;
+        List<ReceiptItem> items = new ArrayList<>();
+        List<ResponseLine> names = responseBody.regions.get(0).lines;
+        List<ResponseLine> prices = responseBody.regions.get(1).lines;
 
-        Iterator name = responseBody.regions.get(0).lines.iterator();
-        Iterator price = responseBody.regions.get(1).lines.iterator();
-
-        while (name.hasNext() && price.hasNext()) {
-
-        }
+        for (int i = 0; i < Math.min(names.size(), prices.size()); ++i)
+            items.add(new ReceiptItem(names.get(i).getLine(true), prices.get(i).getPrice()));
 
         return items;
     }
