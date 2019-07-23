@@ -1,8 +1,10 @@
 package com.billbreaker;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -62,6 +64,10 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
+        Intent intent = this.getIntent();
+        receiptItemList = intent.getParcelableArrayListExtra("receiptItems");
+        Log.d("EditItemsActivity", receiptItemList.toString());
+
         mAdapter = new EditItemsAdaptor(this, receiptItemList);
 
         recyclerView.setHasFixedSize(true);
@@ -108,8 +114,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallbackEdit = new RecyclerItemTouchHelper(0, RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallbackEdit).attachToRecyclerView(recyclerView);
-
-        prepareReceiptItemData();
 
         // Remove by swiping right to LEFT
         ItemTouchHelper.SimpleCallback itemTouchHelperCallbackLeft = new ItemTouchHelper.SimpleCallback(0, LEFT) {
@@ -168,24 +172,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
                 mAdapter.addItem();
             }
         });
-    }
-
-    /**
-     * Prepares sample data to provide data set to adapter
-     */
-    private void prepareReceiptItemData() {
-        ReceiptItem receiptItem = new ReceiptItem("Mad Max: Fury Road", 2.0);
-        receiptItemList.add(receiptItem);
-
-        ReceiptItem receiptItem2 = new ReceiptItem("Mad Max: Fury Road", 2.0);
-        receiptItemList.add(receiptItem);
-
-        ReceiptItem receiptItem3 = new ReceiptItem("Mad Max: Fury Road", 2.0);
-        receiptItemList.add(receiptItem);
-
-        // notify adapter about data set changes
-        // so that it will render the list with new data
-        mAdapter.notifyDataSetChanged();
     }
 
     /**

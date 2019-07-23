@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<ReceiptItem> receiptItems) {
             super.onPostExecute(receiptItems);
             progressDialog.dismiss();
-            // TODO: Pass list onto next window somehow
             Intent intent = new Intent(MainActivity.this, EditItemsActivity.class);
             intent.putParcelableArrayListExtra("receiptItems", receiptItems);
             startActivity(intent);
