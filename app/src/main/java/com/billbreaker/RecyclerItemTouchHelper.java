@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
+
 /**
  * Created by ravi on 29/09/17.
  */
@@ -60,6 +62,9 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+        if(direction == LEFT) {
+            final View backgroundView = ((EditItemsAdaptor.MyViewHolder) viewHolder).viewForeground;
+        }
     }
 
     @Override
