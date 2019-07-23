@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateReceipts() {
-        // receipt = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
+        // receipts = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
     }
 
     @Override
