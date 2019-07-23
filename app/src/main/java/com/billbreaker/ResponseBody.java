@@ -4,7 +4,7 @@ import java.util.List;
 
 class ResponseBody {
     String language;
-    boolean textAngle;
+    double textAngle;
     String orientation;
     List<ResponseRegion> regions;
 }
