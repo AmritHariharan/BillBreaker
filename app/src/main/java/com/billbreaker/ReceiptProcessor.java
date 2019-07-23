@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.client.utils.URIBuilder;
+import cz.msebera.android.httpclient.entity.ByteArrayEntity;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.util.EntityUtils;
@@ -33,8 +35,7 @@ class ReceiptProcessor {
 
             URI uri = builder.build();
             HttpPost request = new HttpPost(uri);
-//            request.setHeader("Content-Type", "application/octet-stream");
-            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Content-Type", "application/octet-stream");
             request.setHeader("Ocp-Apim-Subscription-Key", BuildConfig.AZURE_COGNITION_KEY);
 
             // Process Bitmap to binary array
@@ -43,8 +44,7 @@ class ReceiptProcessor {
             byte[] receiptBytes = stream.toByteArray();
 
             // Request body
-//            StringEntity reqEntity = new StringEntity(Arrays.toString(receiptBytes));
-            StringEntity reqEntity = new StringEntity("{\"url\":\"https://i.imgur.com/dpTVdcZ.jpg\"}");
+            ByteArrayEntity reqEntity = new ByteArrayEntity(receiptBytes);
             request.setEntity(reqEntity);
 
             // Response

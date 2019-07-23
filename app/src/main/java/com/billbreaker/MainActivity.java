@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),result.getUri());
                     AsyncTaskRunner runner = new AsyncTaskRunner();
-                    runner.execute(Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2, false));
+                    runner.execute(Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/4, bitmap.getHeight()/4, false));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
