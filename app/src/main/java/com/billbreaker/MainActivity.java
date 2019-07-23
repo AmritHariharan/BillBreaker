@@ -23,6 +23,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -117,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
         return image;
     }
 
-    private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, List<ReceiptItem>> {
+    private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, ArrayList<ReceiptItem>> {
         ProgressDialog progressDialog;
 
         @Override
-        protected List<ReceiptItem> doInBackground(Bitmap... bitmaps) {
+        protected ArrayList<ReceiptItem> doInBackground(Bitmap... bitmaps) {
             return ReceiptProcessor.processItems(bitmaps[0]);
         }
 
@@ -133,10 +134,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<ReceiptItem> receiptItems) {
+        protected void onPostExecute(ArrayList<ReceiptItem> receiptItems) {
             super.onPostExecute(receiptItems);
             progressDialog.dismiss();
             // TODO: Pass list onto next window somehow
+            Intent intent = new Intent(MainActivity.this, EditItemsActivity.class);
+            intent.putParcelableArrayListExtra("receiptItems", receiptItems);
+            startActivity(intent);
         }
     }
 }
