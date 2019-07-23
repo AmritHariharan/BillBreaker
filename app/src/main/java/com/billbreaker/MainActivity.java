@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     String filePath;
     Uri originalPhotoUri;
+    ReceiptDatabase receiptDatabase;
+    Receipt receipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +46,20 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton newPhoto = findViewById(R.id.new_photo);
 
+        receiptDatabase = new ReceiptDatabase(MainActivity.this);
+
+        populateReceipts();
+
         newPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dispatchTakePhoto();
             }
         });
+    }
+
+    private void populateReceipts() {
+        // receipt = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
     }
 
     @Override
