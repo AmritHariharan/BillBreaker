@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     String filePath;
     Uri originalPhotoUri;
     ReceiptDatabase receiptDatabase;
-    Receipt receipt;
+    List<Receipt> receipts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
