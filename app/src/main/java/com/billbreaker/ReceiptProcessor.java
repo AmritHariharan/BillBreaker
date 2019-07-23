@@ -1,25 +1,27 @@
 package com.billbreaker;
 
-import android.media.Image;
+import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.client.utils.URIBuilder;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.impl.client.HttpClients;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 class ReceiptProcessor {
 
-    private static ResponseBody getItemsFromImage(Image receipt) { // FIXME: actually return something lmao
+    private static ResponseBody getItemsFromImage(Bitmap receipt) {
         HttpClient httpclient = HttpClients.createDefault();
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -31,11 +33,18 @@ class ReceiptProcessor {
 
             URI uri = builder.build();
             HttpPost request = new HttpPost(uri);
+//            request.setHeader("Content-Type", "application/octet-stream");
             request.setHeader("Content-Type", "application/json");
             request.setHeader("Ocp-Apim-Subscription-Key", BuildConfig.AZURE_COGNITION_KEY);
 
+            // Process Bitmap to binary array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            receipt.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] receiptBytes = stream.toByteArray();
+
             // Request body
-            StringEntity reqEntity = new StringEntity("{body}"); // TODO: this...
+//            StringEntity reqEntity = new StringEntity(Arrays.toString(receiptBytes));
+            StringEntity reqEntity = new StringEntity("{\"url\":\"https://i.imgur.com/dpTVdcZ.jpg\"}");
             request.setEntity(reqEntity);
 
             // Response
@@ -44,12 +53,12 @@ class ReceiptProcessor {
 
             return mapper.readValue(jsonResponse, ResponseBody.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("ReceiptProcessor", Objects.requireNonNull(e.getMessage()));
             return new ResponseBody();
         }
     }
 
-    static List<ReceiptItem> processItems(Image receipt) {
+    static List<ReceiptItem> processItems(Bitmap receipt) {
         ResponseBody responseBody = getItemsFromImage(receipt);
 
         if (responseBody.regions.size() != 2)
@@ -62,6 +71,7 @@ class ReceiptProcessor {
         for (int i = 0; i < Math.min(names.size(), prices.size()); ++i)
             items.add(new ReceiptItem(names.get(i).getLine(true), prices.get(i).getPrice()));
 
+        Log.d("ReceiptProcessor", items.toString());
         return items;
     }
 }

@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
@@ -63,8 +66,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Bitmap bitmap = result.getBitmap();
-                // TODO send this to amrit and anna
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),result.getUri());
+                    AsyncTaskRunner runner = new AsyncTaskRunner();
+                    runner.execute(Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2, false));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 System.out.println(error.toString());
@@ -97,5 +105,28 @@ public class MainActivity extends AppCompatActivity {
             Log.d("main log", "Excep: " + e.toString());
         }
         return image;
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, List<ReceiptItem>> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected List<ReceiptItem> doInBackground(Bitmap... bitmaps) {
+            return ReceiptProcessor.processItems(bitmaps[0]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(MainActivity.this,
+                    "ProgressDialog", "Processing Image");
+        }
+
+        @Override
+        protected void onPostExecute(List<ReceiptItem> receiptItems) {
+            super.onPostExecute(receiptItems);
+            progressDialog.dismiss();
+            // TODO: Pass list onto next window somehow
+        }
     }
 }
