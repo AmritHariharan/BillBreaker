@@ -18,7 +18,7 @@
             android:scrollbars="vertical"></androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
-    
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,5 +29,13 @@
         app:backgroundTint="@color/design_default_color_primary"
         app:elevation="6dp"
         android:id="@+id/new_photo"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to items view!"
+        tools:layout_editor_absoluteX="167dp"
+        tools:layout_editor_absoluteY="475dp" />
 
 </com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout>

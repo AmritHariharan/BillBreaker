@@ -58,13 +58,13 @@ class ReceiptProcessor {
         }
     }
 
-    static List<ReceiptItem> processItems(Bitmap receipt) {
+    static ArrayList<ReceiptItem> processItems(Bitmap receipt) {
         ResponseBody responseBody = getItemsFromImage(receipt);
 
         if (responseBody.regions.size() != 2)
             throw new RuntimeException("Incorrect number of regions in response body, should be 2");
 
-        List<ReceiptItem> items = new ArrayList<>();
+        ArrayList<ReceiptItem> items = new ArrayList<>();
         List<ResponseLine> names = responseBody.regions.get(0).lines;
         List<ResponseLine> prices = responseBody.regions.get(1).lines;
 

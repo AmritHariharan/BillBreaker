@@ -25,7 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <activity android:name=".EditItemsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <provider
             android:authorities="com.billbreaker.MainActivity"
             android:name="androidx.core.content.FileProvider"
