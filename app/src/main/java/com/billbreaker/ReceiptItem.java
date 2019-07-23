@@ -24,4 +24,12 @@ class ReceiptItem {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "ReceiptItem{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

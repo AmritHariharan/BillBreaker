@@ -38,7 +38,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.material:material:1.0.0-rc01'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.9'
+    implementation 'cz.msebera.android:httpclient:4.5.8'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9.1'
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 }
