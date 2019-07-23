@@ -39,7 +39,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.android.support:design:29.0.0'
-    implementation 'com.google.android.material:material:1.0.0-rc01'
     implementation 'org.apache.httpcomponents:httpclient:4.5.9'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9.1'
 }

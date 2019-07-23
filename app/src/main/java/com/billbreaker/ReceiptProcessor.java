@@ -13,7 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,6 +45,7 @@ class ReceiptProcessor {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     static List<ReceiptItem> processItems(Image receipt) {
@@ -55,13 +55,13 @@ class ReceiptProcessor {
             throw new RuntimeException("Incorrect number of regions in response body, should be 2");
         }
 
-        List<ReceiptItem> items;
+        List<ReceiptItem> items = null;
 
         Iterator name = responseBody.regions.get(0).lines.iterator();
         Iterator price = responseBody.regions.get(1).lines.iterator();
 
         while (name.hasNext() && price.hasNext()) {
-
+            items.add(new ReceiptItem(name.next().toString(), (double)price.next()));
         }
 
         return items;
