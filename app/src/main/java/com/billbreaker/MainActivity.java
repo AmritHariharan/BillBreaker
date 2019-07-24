@@ -20,6 +20,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -88,6 +90,26 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
                 // TODO go to overview activity
             }
         });
+
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            requestPermissions(new String[]{
+//                    Manifest.permission.CAMERA,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+//        }
+//
+//        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
+//
+//        receiptDatabase = new ReceiptDatabase(MainActivity.this);
+//
+//        populateReceipts();
+//
+//        newPhoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dispatchTakePhoto();
+//            }
+//        });
     }
 
     private void populateReceipts() {
@@ -97,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
         PersonalReceiptItem amrit = new PersonalReceiptItem("amrit", 9.83);
         PersonalReceiptItem anna = new PersonalReceiptItem("anna", 11.95);
         List<PersonalReceiptItem> items = Arrays.asList(shri, ada, amrit, anna);
-        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
+        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis(), 0, 0, 0);
 
         receipts = Arrays.asList(receipt, receipt, receipt);
 
