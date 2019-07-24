@@ -15,22 +15,5 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:layout_marginBottom="50dp"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/add_item_button"
-        android:textAllCaps="true"
-        android:text="+ Add Item"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/commit_edits_button"
-        android:textAllCaps="true"
-        android:text="Save"/>
 
 </RelativeLayout>

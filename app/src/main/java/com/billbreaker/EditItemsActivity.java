@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -95,7 +94,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             @Override
             public void onClick(View view, int position) {
                 ReceiptItem receiptItem = receiptItemList.get(position);
-                Toast.makeText(getApplicationContext(), receiptItem.getName() + " is selected!", Toast.LENGTH_SHORT).show();
                 showEditItemsPopup(position, receiptItem);
             }
 
