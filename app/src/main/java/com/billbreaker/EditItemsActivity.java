@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +60,7 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Edit Items");
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
@@ -138,6 +140,13 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             public void onClick(View v) {
                 mAdapter.addItem();
                 showEditItemsPopup(receiptItemList.size() - 1, receiptItemList.get(receiptItemList.size() - 1));
+            }
+        });
+
+        final Button saveButton = (Button) findViewById(R.id.save_receipt_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TODO: Make this take you to assign items screen
             }
         });
     }
