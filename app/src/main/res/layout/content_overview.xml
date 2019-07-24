@@ -14,44 +14,112 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:layout_marginBottom="150dp"/>
+        android:layout_marginBottom="170dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="170dp"
+        android:orientation="vertical"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true">
 
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:text="Total"
-            android:textAllCaps="true"
-            android:gravity="right"
-            android:textStyle="bold"
-            android:paddingRight="@dimen/padd_10"/>
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="15dp"
+            android:background="#D3D3D3"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:text="Subtotal:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:text="Tip:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="20dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:text="Tax:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Total"
+                    android:textSize="17dp"
+                    android:layout_marginTop="25dp"
+                    android:textAllCaps="true"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Subtotal"
+                    android:layout_marginTop="20dp"
+                    android:textColor="#000000"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Tip"
+                    android:textColor="#000000"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="Tax"
+                    android:textColor="#000000"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:orientation="vertical"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:id="@+id/totalAmt"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="25dp"
+                    android:textSize="17dp"
+                    android:text="$-.--"
+                    android:textAllCaps="true"
+                    android:textAlignment="viewEnd"/>
+
+                <TextView
+                    android:id="@+id/subtotalAmt"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="20dp"
+                    android:text="$-.--"
+                    android:textColor="#000000"
+                    android:textAlignment="viewEnd"/>
+
+                <TextView
+                    android:id="@+id/tipAmt"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="$-.--"
+                    android:textColor="#000000"
+                    android:textAlignment="viewEnd"/>
+
+                <TextView
+                    android:id="@+id/taxAmt"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="$-.--"
+                    android:textColor="#000000"
+                    android:textAlignment="viewEnd"/>
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
+
 
 </RelativeLayout>
