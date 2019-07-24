@@ -62,7 +62,8 @@ class ReceiptProcessor {
         ResponseBody responseBody = getItemsFromImage(receipt);
 
         if (responseBody.regions.size() != 2)
-            throw new RuntimeException("Incorrect number of regions in response body, should be 2");
+            throw new RuntimeException("Incorrect number of regions in response body, found"
+                    + responseBody.regions.size() + ", should be 2");
 
         ArrayList<ReceiptItem> items = new ArrayList<>();
         List<ResponseLine> names = responseBody.regions.get(0).lines;
