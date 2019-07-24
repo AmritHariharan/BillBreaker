@@ -74,7 +74,7 @@ public class EditItemsAdaptor extends RecyclerView.Adapter<EditItemsAdaptor.MyVi
 
     public void addItem() {
         ReceiptItem e = new ReceiptItem("New Item", 0);
-        receiptItemsList.add(0, e);
+        receiptItemsList.add(e);
         notifyItemInserted(0);
     }
 }
