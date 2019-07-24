@@ -21,11 +21,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <Button
+                android:id="@+id/settings_button"
                 android:layout_width="@dimen/settings_button_params"
                 android:layout_height="@dimen/settings_button_params"
                 android:layout_gravity="end"
-                android:id="@+id/settings_button"
-                android:background="@drawable/baseline_settings_white_18dp" />
+                android:background="@drawable/baseline_settings_white_18dp"
+                android:onClick="onSettingsButtonClicked" />
 
         </androidx.appcompat.widget.Toolbar>
 

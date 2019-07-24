@@ -16,8 +16,8 @@
             android:textSize="15sp"/>
 
         <EditText
-            android:id="@+id/price_edits"
-            android:hint="Enter tax percentage"
+            android:id="@+id/tax_edit"
+            android:hint="Ex: for 10%, enter 10"
             android:inputType="numberDecimal"
             android:textSize="15sp"/>
 

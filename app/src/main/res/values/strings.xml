@@ -6,4 +6,5 @@
     <string name="title_activity_take_photo">TakePhoto</string>
     <string name="june_23rd_2019_3_39pm">June 23rd, 2019 - 3:39pm</string>
     <string name="shri_13_34">shri - $13.34</string>
+    <string name="preference_file_key">"com.billbreaker.PREFERENCE_FILE_KEY"</string>
 </resources>

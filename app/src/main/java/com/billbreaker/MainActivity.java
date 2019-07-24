@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
     ReceiptDatabase receiptDatabase;
     List<Receipt> receipts;
     private RecyclerView recyclerView;
+    public static final String TAX_KEY = "taxKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,52 +56,6 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        Button button = findViewById(R.id.settings_button);
-
-        // Set a click listener for the text view
-        button.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-               // Set title, icon, can not cancel properties.
-               alertDialogBuilder.setTitle("Set Default Tax Percentage");
-               alertDialogBuilder.setIcon(R.drawable.ic_launcher_background);
-               alertDialogBuilder.setCancelable(false);
-
-               LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
-               View customView = layoutInflater.inflate(R.layout.settings_popup, null);
-
-               // Set the inflated layout view object to the AlertDialog builder.
-               alertDialogBuilder.setView(customView);
-
-               // Create AlertDialog and show.
-               final AlertDialog alertDialog = alertDialogBuilder.create();
-               alertDialog.show();
-
-               Button saveButton = customView.findViewById(R.id.button_save_user_data);
-               Button cancelButton = customView.findViewById(R.id.button_cancel_user_data);
-
-               final EditText taxEditText = customView.findViewById(R.id.price_edits);
-
-               saveButton.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View view) {
-
-                       double newPrice = Double.parseDouble(taxEditText.getText().toString());
-                       Log.i("bill breaker", String.valueOf(newPrice));
-                       alertDialog.cancel();
-                   }
-               });
-
-               cancelButton.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View view) {
-                       alertDialog.cancel();
-                   }
-               });
-           }
-       });
 
         if (Build.VERSION.SDK_INT >= 23) {
            requestPermissions(new String[]{
@@ -222,5 +180,55 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
             intent.putParcelableArrayListExtra("receiptItems", receiptItems);
             startActivity(intent);
         }
+    }
+
+    public void onSettingsButtonClicked(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        // Set title, icon, can not cancel properties.
+        alertDialogBuilder.setTitle("Set Default Tax Percentage");
+        alertDialogBuilder.setIcon(R.drawable.ic_launcher_background);
+        alertDialogBuilder.setCancelable(false);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        View settingsView = layoutInflater.inflate(R.layout.settings_popup, null);
+
+        // Set the inflated layout view object to the AlertDialog builder.
+        alertDialogBuilder.setView(settingsView);
+
+        // Create AlertDialog and show.
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+        Button saveButton = settingsView.findViewById(R.id.button_save_user_data);
+        Button cancelButton = settingsView.findViewById(R.id.button_cancel_user_data);
+        final EditText taxEditText = settingsView.findViewById(R.id.tax_edit);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float tax = Float.parseFloat(taxEditText.getText().toString());
+                Context context = getApplicationContext();
+
+                // tax percentage will be stored in sharedPreferences to be easily accessible later
+                SharedPreferences sharedPreferences =
+                        context.getSharedPreferences(
+                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putFloat(TAX_KEY, tax);
+                editor.apply();
+
+                Toast.makeText(context, "default tax set as " + tax, Toast.LENGTH_LONG)
+                        .show();
+
+                alertDialog.cancel();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
     }
 }
