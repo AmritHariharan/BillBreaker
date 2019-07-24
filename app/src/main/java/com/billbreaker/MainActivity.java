@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     String filePath;
     Uri originalPhotoUri;
-    ReceiptDatabase receiptDatabase;
+//    ReceiptDatabase receiptDatabase;
     List<Receipt> receipts;
 
     @Override
@@ -37,7 +37,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PersonalReceiptItem e = new PersonalReceiptItem("Hello", 1);
+        PersonalReceiptItem f = new PersonalReceiptItem("hi", 1);
+        List<PersonalReceiptItem> personalReceiptItems = new ArrayList<>();
+        personalReceiptItems.add(e);
+        personalReceiptItems.add(f);
+        ReceiptDatabase receiptDatabase = new ReceiptDatabase(this);
+        long timestamp = new Date().getTime();
+        receiptDatabase.putReceipt(new Receipt(personalReceiptItems, timestamp, 10.0, 20, 10), timestamp);
+
         Intent intent = new Intent(this, OverviewActivity.class);
+        intent.putExtra(OverviewActivity.TIMESTAMP_KEY, timestamp);
         startActivity(intent);
 
 //        if (Build.VERSION.SDK_INT >= 23) {

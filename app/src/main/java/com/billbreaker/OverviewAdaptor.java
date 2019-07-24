@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,14 +18,11 @@ public class OverviewAdaptor extends RecyclerView.Adapter<OverviewAdaptor.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, price;
-        public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
             price = (TextView) view.findViewById(R.id.debt);
-            viewBackground = view.findViewById(R.id.view_background);
-            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 

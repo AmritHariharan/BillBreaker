@@ -1,11 +1,12 @@
 package com.billbreaker;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,14 +16,23 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class OverviewActivity extends AppCompatActivity {
     private List<PersonalReceiptItem> peopleList = new ArrayList<>();
     private RecyclerView recyclerView;
     private OverviewAdaptor mAdapter;
     private CoordinatorLayout coordinatorLayout;
+    private long timestamp;
+    public static final String TIMESTAMP_KEY = "timestampTest";
+    private double tipTotal;
+    private double taxTotal;
+    private double subtotal;
 
 
     // Below edittext and button are all exist in the popup dialog view.
@@ -42,8 +52,27 @@ public class OverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overview_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Intent intent = this.getIntent();
+        timestamp = intent.getLongExtra(TIMESTAMP_KEY, 0);
+        Log.d("OverviewActivity", peopleList.toString());
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.overview_toolbar);
         setSupportActionBar(toolbar);
+
+        DateFormat timestampFormat = new SimpleDateFormat("MM-dd-yyyy, HH:mm:ss", Locale.US);
+        Date date = new Date(timestamp);
+
+        setTitle(timestampFormat.format(date));
+
+        ReceiptDatabase receiptDatabase = new ReceiptDatabase(this);
+        Receipt receipt = receiptDatabase.getReceipt(timestamp);
+        peopleList = receipt.getPersonalReceiptItems();
+
+        tipTotal = receipt.getTip();
+        taxTotal = receipt.getTax();
+        subtotal = receipt.getSubtotal();
+        addTipAndTaxByPercentage();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
@@ -76,7 +105,6 @@ public class OverviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 PersonalReceiptItem receiptItem = peopleList.get(position);
-                Toast.makeText(getApplicationContext(), receiptItem.getName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -84,19 +112,17 @@ public class OverviewActivity extends AppCompatActivity {
 
             }
         }));
-
-        prepareReceiptItemData();
     }
 
-     private void prepareReceiptItemData() {
-        PersonalReceiptItem receiptItem = new PersonalReceiptItem("Mad Max: Fury Road", 2.0);
-        peopleList.add(receiptItem);
-        PersonalReceiptItem receiptItem2 = new PersonalReceiptItem("Mad Max: Fury Road", 2.0);
-        peopleList.add(receiptItem);
-        PersonalReceiptItem receiptItem3 = new PersonalReceiptItem("Mad Max: Fury Road", 2.0);
-        peopleList.add(receiptItem);
-        // notify adapter about data set changes
-        // so that it will render the list with new data
-        mAdapter.notifyDataSetChanged();
+    private void addTipAndTaxByPercentage() {
+
+        double tipOwed, percentageOwed, taxOwed;
+
+        for (PersonalReceiptItem e : peopleList) {
+            percentageOwed = subtotal > 0 ? e.getPrice() / subtotal : 0;
+            tipOwed = percentageOwed * tipTotal;
+            taxOwed = percentageOwed * taxTotal;
+            e.setPrice(e.getPrice() + tipOwed + taxOwed);
+        }
     }
 }
