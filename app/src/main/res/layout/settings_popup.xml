@@ -12,12 +12,12 @@
 
         <TextView
             android:gravity="end"
-            android:text="Set Default Tax Percentage : "
-            android:textSize="15sp"/>
+            android:text="@string/tax_percentage_title"
+            android:textSize="15sp" />
 
         <EditText
             android:id="@+id/tax_edit"
-            android:hint="Ex: for 10%, enter 10"
+            android:hint="@string/tax_percentage_hint"
             android:inputType="numberDecimal"
             android:textSize="15sp"/>
 
@@ -29,7 +29,7 @@
             android:id="@+id/button_cancel_user_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textSize="20sp"
             android:textAllCaps="false"
             android:gravity="center_horizontal"
@@ -40,7 +40,7 @@
             android:id="@+id/button_save_user_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="@string/save"
             android:textSize="20sp"
             android:textAllCaps="false"
             android:gravity="center_horizontal"
