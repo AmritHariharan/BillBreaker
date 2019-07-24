@@ -60,7 +60,7 @@ public class OverviewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.overview_toolbar);
         setSupportActionBar(toolbar);
 
-        DateFormat timestampFormat = new SimpleDateFormat("MM-dd-yyyy, HH:mm:ss", Locale.US);
+        DateFormat timestampFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale.US);
         Date date = new Date(timestamp);
 
         setTitle(timestampFormat.format(date));

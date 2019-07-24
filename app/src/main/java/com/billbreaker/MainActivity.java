@@ -15,13 +15,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -30,14 +26,12 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.billbreaker.OverviewActivity.TIMESTAMP_KEY;
 
 public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.OnReceiptClickedListener {
 
@@ -75,53 +69,18 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
                 dispatchTakePhoto();
             }
         });
-
-        recyclerView.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                System.out.println("here i am!!!");
-            }
-        });
-
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                // TODO go to overview activity
-            }
-        });
-
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            requestPermissions(new String[]{
-//                    Manifest.permission.CAMERA,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-//        }
-//
-//        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
-//
-//        receiptDatabase = new ReceiptDatabase(MainActivity.this);
-//
-//        populateReceipts();
-//
-//        newPhoto.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dispatchTakePhoto();
-//            }
-//        });
     }
 
     private void populateReceipts() {
-        // receipts = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
-        PersonalReceiptItem shri = new PersonalReceiptItem("shri", 13.34);
-        PersonalReceiptItem ada = new PersonalReceiptItem("ada", 14.57);
-        PersonalReceiptItem amrit = new PersonalReceiptItem("amrit", 9.83);
-        PersonalReceiptItem anna = new PersonalReceiptItem("anna", 11.95);
-        List<PersonalReceiptItem> items = Arrays.asList(shri, ada, amrit, anna);
-        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis(), 0, 0, 0);
-
-        receipts = Arrays.asList(receipt, receipt, receipt);
+         receipts = receiptDatabase.getAllReceipts();
+//        PersonalReceiptItem shri = new PersonalReceiptItem("shri", 13.34);
+//        PersonalReceiptItem ada = new PersonalReceiptItem("ada", 14.57);
+//        PersonalReceiptItem amrit = new PersonalReceiptItem("amrit", 9.83);
+//        PersonalReceiptItem anna = new PersonalReceiptItem("anna", 11.95);
+//        List<PersonalReceiptItem> items = Arrays.asList(shri, ada, amrit, anna);
+//        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis(), 0, 0, 0);
+//
+//        receipts = Arrays.asList(receipt, receipt, receipt);
 
         RecyclerView.Adapter adapter = new ReceiptsAdapter(receipts, MainActivity.this);
         recyclerView.setAdapter(adapter);
@@ -182,10 +141,9 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
     @Override
     public void onReceiptClicked(int position) {
         Receipt receipt = receipts.get(position);
-        // TODO start overview with receipt
-//        Intent intent = new Intent(this, ReceiptItems.class);
-//        intent.putExtra("RECEIPT", (Parcelable) receipt);
-//        startActivity(intent);
+        Intent intent = new Intent(this, OverviewActivity.class);
+        intent.putExtra(TIMESTAMP_KEY, receipt.getTimestamp());
+        startActivity(intent);
     }
 
     private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, ArrayList<ReceiptItem>> {
