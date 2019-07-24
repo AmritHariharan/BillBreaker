@@ -35,7 +35,7 @@ class ReceiptDatabase extends SQLiteOpenHelper {
                         + RECEIPT_TABLE_NAME
                         + "("
                         + "RECEIPT BLOB"
-                        + ", TIMESTAMP BIGINT"
+                        + ", TIMESTAMP BIGINT PRIMARY KEY"
                         + ")");
     }
 
@@ -69,13 +69,47 @@ class ReceiptDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * Retrieves one receipt with the timestamp as the primary key
+     */
+    Receipt getReceipt(long timestamp) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String selection = "TIMESTAMP = ?";
+        String[] selectionArgs = {
+                String.valueOf(timestamp)
+        };
+
+        Cursor cursor =
+                db.query(RECEIPT_TABLE_NAME, // The table to query
+                        null, // // The values for the WHERE clause
+                        selection, // The columns for the WHERE clause
+                        selectionArgs, // The values for the WHERE clause
+                        null, // don't group the rows
+                        null, // don't filter by row groups
+                        null // The sort order (default ASC)
+                );
+        try {
+            if (cursor.moveToNext()) {
+                byte[] personalReceiptItem = cursor.getBlob(0);
+                List<PersonalReceiptItem> personalReceiptItems = deserializeReceipt(personalReceiptItem);
+                long receiptTimestamp = cursor.getLong(1);
+                return new Receipt(personalReceiptItems, receiptTimestamp);
+            } else {
+                throw new RuntimeException("Database should not have two results for a primary key");
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /**
      * Retrieves all receipts for the user
      */
     List<Receipt> getAllReceipts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor =
                 db.query(RECEIPT_TABLE_NAME, // The table to query
-                        null, // // The values for the WHERE clause
+                        null, // The array of columns to return (pass null to get all)
                         null, // The columns for the WHERE clause
                         null, // The values for the WHERE clause
                         null, // don't group the rows
