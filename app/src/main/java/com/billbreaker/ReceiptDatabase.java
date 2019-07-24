@@ -46,7 +46,8 @@ class ReceiptDatabase extends SQLiteOpenHelper {
 
     /**
      * Adds a receipt to the database by storing the list of personal receipt items. The timestamp
-     * is added here in order to keep track of auto deletion after it expires
+     * is added here in order to keep track of auto deletion after it expires as well as display the
+     * date to the user
      */
     void putReceipt(List<PersonalReceiptItem> receipt) {
         SQLiteDatabase db = getWritableDatabase();
@@ -68,9 +69,9 @@ class ReceiptDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves all receipts for the user in the form of lists of personal receipt items
+     * Retrieves all receipts for the user
      */
-    List<List<PersonalReceiptItem>> getAllReceipts() {
+    List<Receipt> getAllReceipts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor =
                 db.query(RECEIPT_TABLE_NAME, // The table to query
@@ -82,13 +83,14 @@ class ReceiptDatabase extends SQLiteOpenHelper {
                         null // The sort order (default ASC)
                 );
         try {
-            List<List<PersonalReceiptItem>> receipt = new ArrayList<>();
+            List<Receipt> receipts = new ArrayList<>();
             while (cursor.moveToNext()) {
                 byte[] personalReceiptItem = cursor.getBlob(0);
                 List<PersonalReceiptItem> personalReceiptItems = deserializeReceipt(personalReceiptItem);
-                receipt.add(personalReceiptItems);
+                long timestamp = cursor.getLong(1);
+                receipts.add(new Receipt(personalReceiptItems, timestamp));
             }
-            return receipt;
+            return receipts;
         } finally {
             cursor.close();
         }

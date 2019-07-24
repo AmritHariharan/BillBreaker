@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">BillBreaker</string>
+    <string name="action_settings">Settings</string>
+    <string name="my_cart">My Cart</string>
+    <string name="delete">DELETE</string>
     <string name="title_activity_take_photo">TakePhoto</string>
     <string name="june_23rd_2019_3_39pm">June 23rd, 2019 - 3:39pm</string>
     <string name="shri_13_34">shri - $13.34</string>

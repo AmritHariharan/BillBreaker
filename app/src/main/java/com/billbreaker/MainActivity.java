@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -113,8 +116,13 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Bitmap bitmap = result.getBitmap();
-                // TODO send this to amrit and anna
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),result.getUri());
+                    AsyncTaskRunner runner = new AsyncTaskRunner();
+                    runner.execute(Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/4, bitmap.getHeight()/4, false));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 System.out.println(error.toString());
@@ -156,5 +164,30 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
 //        Intent intent = new Intent(this, ReceiptItems.class);
 //        intent.putExtra("RECEIPT", (Parcelable) receipt);
 //        startActivity(intent);
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, ArrayList<ReceiptItem>> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected ArrayList<ReceiptItem> doInBackground(Bitmap... bitmaps) {
+            return ReceiptProcessor.processItems(bitmaps[0]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(MainActivity.this,
+                    "ProgressDialog", "Processing Image");
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ReceiptItem> receiptItems) {
+            super.onPostExecute(receiptItems);
+            progressDialog.dismiss();
+            Intent intent = new Intent(MainActivity.this, EditItemsActivity.class);
+            intent.putParcelableArrayListExtra("receiptItems", receiptItems);
+            startActivity(intent);
+        }
     }
 }
