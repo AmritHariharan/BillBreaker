@@ -22,8 +22,8 @@ public class ItemFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        ((TextView) view.findViewById(android.R.id.text1))
-//                .setText(args.getString(ARG_OBJECT_KEY, "person"));
+        Bundle args = getArguments();
+        ((TextView) view.findViewById(R.id.itemtext))
+                .setText(args.getString(ARG_OBJECT_KEY, "person"));
     }
 }
