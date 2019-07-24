@@ -49,11 +49,10 @@ class ReceiptDatabase extends SQLiteOpenHelper {
      * is added here in order to keep track of auto deletion after it expires as well as display the
      * date to the user
      */
-    void putReceipt(List<PersonalReceiptItem> receipt) {
+    void putReceipt(List<PersonalReceiptItem> receipt, long timestamp) {
         SQLiteDatabase db = getWritableDatabase();
         try {
             byte[] receiptBytes = serializeReceipt(receipt);
-            long timestamp = getTimestamp();
 
             db.beginTransaction();
             ContentValues values = new ContentValues();
@@ -155,14 +154,6 @@ class ReceiptDatabase extends SQLiteOpenHelper {
     private long getTimestamp90DaysAgo() {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.add(Calendar.DATE, -90);
-        return calendar.getTimeInMillis();
-    }
-
-    /**
-     * Retrieve timestamp for the current time
-     */
-    private long getTimestamp() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         return calendar.getTimeInMillis();
     }
 
