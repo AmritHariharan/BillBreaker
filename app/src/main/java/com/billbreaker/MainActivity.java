@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PersonalReceiptItem e = new PersonalReceiptItem("Hello", 1);
-        PersonalReceiptItem f = new PersonalReceiptItem("hi", 1);
+        PersonalReceiptItem e = new PersonalReceiptItem("Hello", 5);
+        PersonalReceiptItem f = new PersonalReceiptItem("hi", 5);
         List<PersonalReceiptItem> personalReceiptItems = new ArrayList<>();
         personalReceiptItems.add(e);
         personalReceiptItems.add(f);

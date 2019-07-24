@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,23 +28,10 @@ public class OverviewActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private long timestamp;
     public static final String TIMESTAMP_KEY = "timestampTest";
-    private double tipTotal;
-    private double taxTotal;
-    private double subtotal;
+    private double tipTotal, taxTotal, subtotal, total;
 
 
-    // Below edittext and button are all exist in the popup dialog view.
-    private View popupInputDialogView = null;
-    // Contains user name data.
-    private EditText nameEditText = null;
-    // Contains email data.
-    private EditText priceEditText = null;
-    // Click this button in popup dialog to save user input data in above three edittext.
-    private Button saveUserDataButton = null;
-    // Click this button to cancel edit user data.
-    private Button cancelUserDataButton = null;
-    // This listview is just under above button.
-    private ListView userDataListView = null;
+    private TextView subtotalView, tipView, taxView, totalView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +54,23 @@ public class OverviewActivity extends AppCompatActivity {
         Receipt receipt = receiptDatabase.getReceipt(timestamp);
         peopleList = receipt.getPersonalReceiptItems();
 
+        subtotalView = (TextView) this.findViewById(R.id.subtotalAmt);
+        tipView = (TextView) this.findViewById(R.id.tipAmt);
+        taxView= (TextView) this.findViewById(R.id.taxAmt);
+        totalView = (TextView) this.findViewById(R.id.totalAmt);
+
         tipTotal = receipt.getTip();
         taxTotal = receipt.getTax();
         subtotal = receipt.getSubtotal();
         addTipAndTaxByPercentage();
+
+        total = subtotal + tipTotal + taxTotal;
+
+        subtotalView.setText(String.format("$%.2f", subtotal));
+        tipView.setText(String.format("$%.2f", tipTotal));
+        taxView.setText(String.format("$%.2f", taxTotal));
+        totalView.setText(String.format("$%.2f", total));
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
