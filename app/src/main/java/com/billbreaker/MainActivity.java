@@ -1,7 +1,10 @@
 package com.billbreaker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -10,8 +13,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,17 +26,21 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.OnReceiptClickedListener {
 
     String filePath;
     Uri originalPhotoUri;
     ReceiptDatabase receiptDatabase;
     List<Receipt> receipts;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +54,15 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
 
-        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
-
         receiptDatabase = new ReceiptDatabase(MainActivity.this);
 
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         populateReceipts();
+
+        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
 
         newPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,10 +70,36 @@ public class MainActivity extends AppCompatActivity {
                 dispatchTakePhoto();
             }
         });
+
+        recyclerView.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                System.out.println("here i am!!!");
+            }
+        });
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                // TODO go to overview activity
+            }
+        });
     }
 
     private void populateReceipts() {
         // receipts = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
+        PersonalReceiptItem shri = new PersonalReceiptItem("shri", 13.34);
+        PersonalReceiptItem ada = new PersonalReceiptItem("ada", 14.57);
+        PersonalReceiptItem amrit = new PersonalReceiptItem("amrit", 9.83);
+        PersonalReceiptItem anna = new PersonalReceiptItem("anna", 11.95);
+        List<PersonalReceiptItem> items = Arrays.asList(shri, ada, amrit, anna);
+        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
+
+        receipts = Arrays.asList(receipt, receipt, receipt);
+
+        RecyclerView.Adapter adapter = new ReceiptsAdapter(receipts, MainActivity.this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -108,5 +147,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d("main log", "Excep: " + e.toString());
         }
         return image;
+    }
+
+    @Override
+    public void onReceiptClicked(int position) {
+        Receipt receipt = receipts.get(position);
+        // TODO start overview with receipt
+//        Intent intent = new Intent(this, ReceiptItems.class);
+//        intent.putExtra("RECEIPT", (Parcelable) receipt);
+//        startActivity(intent);
     }
 }
