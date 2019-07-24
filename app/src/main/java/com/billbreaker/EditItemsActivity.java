@@ -164,12 +164,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
                 mAdapter.removeItem(viewHolder.getAdapterPosition());
                 undoMessageText = " removed from cart!";
             }
-            
-//            if (direction == RIGHT) {
-//                showEditItemsPopup(modifiedIndex, modifiedItem);
-////                mAdapter.removeItem(modifiedIndex + 1);
-//                undoMessageText = " edited!";
-//            }
 
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar
@@ -297,8 +291,8 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         popupInputDialogView = layoutInflater.inflate(R.layout.popup_input_dialog, null);
 
         // Get user input edittext and button ui controls in the popup dialog.
-        nameEditText = (EditText) popupInputDialogView.findViewById(R.id.name_edits);
-        priceEditText = (EditText) popupInputDialogView.findViewById(R.id.price_edits);
+        nameEditText = popupInputDialogView.findViewById(R.id.name_edits);
+        priceEditText = popupInputDialogView.findViewById(R.id.price_edits);
 
         saveUserDataButton = popupInputDialogView.findViewById(R.id.button_save_user_data);
         cancelUserDataButton = popupInputDialogView.findViewById(R.id.button_cancel_user_data);
