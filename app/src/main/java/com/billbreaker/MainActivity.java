@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     String filePath;
     Uri originalPhotoUri;
-//    ReceiptDatabase receiptDatabase;
+    ReceiptDatabase receiptDatabase;
     List<Receipt> receipts;
 
     @Override
