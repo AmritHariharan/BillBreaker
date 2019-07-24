@@ -18,40 +18,46 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="170dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="15dp"
+            android:background="#D3D3D3"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:text="Total"
+            android:layout_marginTop="25dp"
             android:textAllCaps="true"
-            android:gravity="right"
-            android:textStyle="bold"
-            android:paddingRight="@dimen/padd_10"/>
+            android:paddingLeft="20dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:text="Subtotal:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+            android:text="Subtotal"
+            android:layout_marginTop="20dp"
+            android:textColor="#000000"
+            android:paddingLeft="20dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:text="Tip:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+            android:text="Tip"
+            android:textColor="#000000"
+            android:paddingLeft="20dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:text="Tax:"
-            android:gravity="right"
-            android:paddingRight="@dimen/padd_10"/>
+            android:text="Tax"
+            android:textColor="#000000"
+            android:paddingLeft="20dp"/>
     </LinearLayout>
 
 </RelativeLayout>
