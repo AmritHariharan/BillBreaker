@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.material.tabs.TabLayout;
@@ -31,7 +30,42 @@ public class AssignItemsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_items);
 
-        // Setup tab bar on top
+        createRecyclerView();
+        createTabLayout();
+    }
+
+    private void createRecyclerView() {
+        recyclerView = findViewById(R.id.recycler_view);
+
+        // TODO: this should all be passed through
+//        receiptItemList = intent.getParcelableArrayListExtra("receiptItems");
+        receiptItemList.add(new ReceiptItem("yeet", 2.31));
+        receiptItemList.add(new ReceiptItem("oh, wow", 23.1));
+        receiptItemList.add(new ReceiptItem("neato", 033.231));
+
+        adaptor = new AssignItemsAdaptor(this, receiptItemList);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                ReceiptItem receiptItem = receiptItemList.get(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) { }
+        }));
+
+        recyclerView.setAdapter(adaptor);
+    }
+
+    private void createTabLayout() {
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("+"));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -47,27 +81,11 @@ public class AssignItemsActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) { }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (tab.getPosition() == tabLayout.getTabCount()-1)
+                    getNameDialog();
+            }
         });
-
-        // Setup main recyclerview
-        recyclerView = findViewById(R.id.recycler_view);
-
-//        receiptItemList = intent.getParcelableArrayListExtra("receiptItems");
-        receiptItemList.add(new ReceiptItem("yeet", 2.31));
-        receiptItemList.add(new ReceiptItem("oh, wow", 23.1));
-        receiptItemList.add(new ReceiptItem("neato", 033.231));
-
-        adaptor = new AssignItemsAdaptor(this, receiptItemList);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        recyclerView.setAdapter(adaptor);
     }
 
     private void getNameDialog() {

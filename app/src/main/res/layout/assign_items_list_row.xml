@@ -4,29 +4,34 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/view_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="@dimen/padd_10">
+    <RelativeLayout
+        android:id="@+id/view_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="@dimen/padd_10">
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/receipt_item_height"
-                    android:maxLines="1"
-                    android:textSize="17dp"
-                    android:gravity="center"
-                    android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/receipt_item_height"
+            android:maxLines="1"
+            android:textSize="17dp"
+            android:gravity="center"
+            android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/receipt_item_height"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center"/>
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/receipt_item_height"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"/>
 
-        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/people_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
