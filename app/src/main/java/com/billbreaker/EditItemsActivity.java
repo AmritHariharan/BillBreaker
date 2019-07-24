@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
-import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
 
 public class EditItemsActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
     private List<ReceiptItem> receiptItemList = new ArrayList<>();
@@ -58,6 +56,7 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_items_activity);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,7 +95,7 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             @Override
             public void onClick(View view, int position) {
                 ReceiptItem receiptItem = receiptItemList.get(position);
-                Toast.makeText(getApplicationContext(), receiptItem.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+                showEditItemsPopup(position, receiptItem);
             }
 
             @Override
@@ -111,9 +110,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         // add pass ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT as param
         ItemTouchHelper.SimpleCallback itemTouchHelperCallbackRemove = new RecyclerItemTouchHelper(0, LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallbackRemove).attachToRecyclerView(recyclerView);
-
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallbackEdit = new RecyclerItemTouchHelper(0, RIGHT, this);
-        new ItemTouchHelper(itemTouchHelperCallbackEdit).attachToRecyclerView(recyclerView);
 
         // Remove by swiping right to LEFT
         ItemTouchHelper.SimpleCallback itemTouchHelperCallbackLeft = new ItemTouchHelper.SimpleCallback(0, LEFT) {
@@ -134,42 +130,14 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             }
         };
 
-        // Edit by swiping left to RIGHT
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallbackRight = new ItemTouchHelper.SimpleCallback(0, RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // Row is swiped from recycler view
-                // remove it from adapter
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-
         // attaching the touch helper to recycler view
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
-
-        // attaching the touch helper to recycler view
-        new ItemTouchHelper(itemTouchHelperCallbackRight).attachToRecyclerView(recyclerView);
-
-        final Button editButton = (Button) findViewById(R.id.edit_button);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Should enter edit mode!", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         final Button addButton = (Button) findViewById(R.id.add_item_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mAdapter.addItem();
+                showEditItemsPopup(receiptItemList.size() - 1, receiptItemList.get(receiptItemList.size() - 1));
             }
         });
     }
@@ -196,12 +164,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
                 mAdapter.removeItem(viewHolder.getAdapterPosition());
                 undoMessageText = " removed from cart!";
             }
-            
-            if (direction == RIGHT) {
-                showEditItemsPopup(modifiedIndex, modifiedItem);
-//                mAdapter.removeItem(modifiedIndex + 1);
-                undoMessageText = " edited!";
-            }
 
             // showing snack bar with Undo option
             Snackbar snackbar = Snackbar
@@ -218,12 +180,12 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         }
     }
 
-    private void showEditItemsPopup(final int index, ReceiptItem itemBeingEdited) {
+    private void showEditItemsPopup(final int index, final ReceiptItem itemBeingEdited) {
 
         // Create a AlertDialog Builder.
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditItemsActivity.this);
         // Set title, icon, can not cancel properties.
-        alertDialogBuilder.setTitle("User Data Collection Dialog.");
+        alertDialogBuilder.setTitle("EDIT RECEIPT ITEM");
         alertDialogBuilder.setIcon(R.drawable.ic_launcher_background);
         alertDialogBuilder.setCancelable(false);
 
@@ -241,14 +203,14 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         saveUserDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // Get user data from popup dialog editeext.
                 String newName = nameEditText.getText().toString();
                 double newPrice = Double.parseDouble(priceEditText.getText().toString());
 
-                receiptItemList.add(new ReceiptItem(newName, newPrice));
+                itemBeingEdited.setName(newName);
+                itemBeingEdited.setPrice(newPrice);
+                mAdapter.notifyDataSetChanged();
 
-//                receiptItemList.set(index, new ReceiptItem(newName, newPrice));
                 alertDialog.cancel();
             }
         });
@@ -329,8 +291,8 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         popupInputDialogView = layoutInflater.inflate(R.layout.popup_input_dialog, null);
 
         // Get user input edittext and button ui controls in the popup dialog.
-        nameEditText = (EditText) popupInputDialogView.findViewById(R.id.name_edits);
-        priceEditText = (EditText) popupInputDialogView.findViewById(R.id.price_edits);
+        nameEditText = popupInputDialogView.findViewById(R.id.name_edits);
+        priceEditText = popupInputDialogView.findViewById(R.id.price_edits);
 
         saveUserDataButton = popupInputDialogView.findViewById(R.id.button_save_user_data);
         cancelUserDataButton = popupInputDialogView.findViewById(R.id.button_cancel_user_data);

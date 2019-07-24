@@ -2,6 +2,8 @@ package com.billbreaker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -28,13 +30,15 @@ import java.util.Date;
 import java.util.List;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.billbreaker.OverviewActivity.TIMESTAMP_KEY;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.OnReceiptClickedListener {
 
     String filePath;
     Uri originalPhotoUri;
     ReceiptDatabase receiptDatabase;
     List<Receipt> receipts;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +52,15 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
 
-        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
-
         receiptDatabase = new ReceiptDatabase(MainActivity.this);
 
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         populateReceipts();
+
+        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
 
         newPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +71,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateReceipts() {
-        // receipts = receiptDatabase.getAllReceipts(); TODO uncomment this when ada updates receipt database
+         receipts = receiptDatabase.getAllReceipts();
+//        PersonalReceiptItem shri = new PersonalReceiptItem("shri", 13.34);
+//        PersonalReceiptItem ada = new PersonalReceiptItem("ada", 14.57);
+//        PersonalReceiptItem amrit = new PersonalReceiptItem("amrit", 9.83);
+//        PersonalReceiptItem anna = new PersonalReceiptItem("anna", 11.95);
+//        List<PersonalReceiptItem> items = Arrays.asList(shri, ada, amrit, anna);
+//        Receipt receipt = new Receipt(items, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis(), 0, 0, 0);
+//
+//        receipts = Arrays.asList(receipt, receipt, receipt);
+
+        RecyclerView.Adapter adapter = new ReceiptsAdapter(receipts, MainActivity.this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -116,6 +135,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d("main log", "Excep: " + e.toString());
         }
         return image;
+    }
+
+    @Override
+    public void onReceiptClicked(int position) {
+        Receipt receipt = receipts.get(position);
+        Intent intent = new Intent(this, OverviewActivity.class);
+        intent.putExtra(TIMESTAMP_KEY, receipt.getTimestamp());
+        startActivity(intent);
     }
 
     private class AsyncTaskRunner extends AsyncTask<Bitmap, Void, ArrayList<ReceiptItem>> {

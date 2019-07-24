@@ -4,77 +4,73 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class EditItemsAdaptor extends RecyclerView.Adapter<EditItemsAdaptor.MyViewHolder> {
+public class OverviewAdaptor extends RecyclerView.Adapter<OverviewAdaptor.MyViewHolder> {
 
     private Context context;
-    private List<ReceiptItem> receiptItemsList;
+    private List<PersonalReceiptItem> peopleList;
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, price;
-        public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
-            price = (TextView) view.findViewById(R.id.price);
-            viewBackground = view.findViewById(R.id.view_background);
-            viewForeground = view.findViewById(R.id.view_foreground);
+            price = (TextView) view.findViewById(R.id.debt);
         }
     }
 
-    public EditItemsAdaptor(Context context, List<ReceiptItem> receiptItemsList) {
+    public OverviewAdaptor(Context context, List<PersonalReceiptItem> peopleList) {
         this.context = context;
-        this.receiptItemsList = receiptItemsList;
+        this.peopleList = peopleList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.items_list_row, parent, false);
+                .inflate(R.layout.people_rows, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ReceiptItem receiptItem = receiptItemsList.get(position);
-        holder.name.setText(receiptItem.getName());
-        String formattedPrice = String.format("$%.2f", receiptItem.getPrice());
+        PersonalReceiptItem personalReceiptItem = peopleList.get(position);
+        holder.name.setText(personalReceiptItem.getName());
+        String formattedPrice = String.format("$%.2f", personalReceiptItem.getPrice());
         holder.price.setText(formattedPrice);
     }
 
     @Override
     public int getItemCount() {
-        return receiptItemsList.size();
+        return peopleList.size();
     }
 
     public void removeItem(int position) {
-        receiptItemsList.remove(position);
+        peopleList.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(ReceiptItem item, int position) {
-        receiptItemsList.add(position, item);
+    public void restoreItem(PersonalReceiptItem item, int position) {
+        peopleList.add(position, item);
         notifyItemInserted(position);
     }
 
-    public void editItem(ReceiptItem item, int position) {
+    public void editItem(PersonalReceiptItem item, int position) {
         item.setName("SomethingNew");
         item.setPrice(4.5);
         notifyDataSetChanged();
     }
 
     public void addItem() {
-        ReceiptItem e = new ReceiptItem("New Item", 0);
-        receiptItemsList.add(e);
+        PersonalReceiptItem e = new PersonalReceiptItem("New Item", 0);
+        peopleList.add(e);
         notifyItemInserted(0);
     }
 }

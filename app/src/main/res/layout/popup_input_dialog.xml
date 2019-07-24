@@ -34,7 +34,7 @@
         <EditText
             android:id="@+id/price_edits"
             android:hint="Enter new price."
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
     </TableRow>
 
