@@ -44,6 +44,14 @@ public class OverviewActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.overview_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
 
         DateFormat timestampFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale.US);
         Date date = new Date(timestamp);
