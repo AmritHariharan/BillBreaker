@@ -52,8 +52,18 @@
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/receipt_item_height"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toLeftOf="@id/pencil_icon"
+                    android:paddingRight="@dimen/padd_10"
                     android:gravity="center"/>
+
+                <ImageView
+                    android:id="@+id/pencil_icon"
+                    android:layout_width="@dimen/edit_button_params"
+                    android:layout_height="@dimen/edit_button_params"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/padd_10"
+                    android:src="@drawable/pencil_icon_light" />
 
         </RelativeLayout>
 
