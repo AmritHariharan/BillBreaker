@@ -28,6 +28,9 @@
         <activity android:name=".EditItemsActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".OverviewActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <provider
             android:authorities="com.billbreaker.MainActivity"

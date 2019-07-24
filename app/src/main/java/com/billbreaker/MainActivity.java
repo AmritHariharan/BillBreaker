@@ -1,22 +1,18 @@
 package com.billbreaker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -41,25 +37,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPermissions(new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-        }
+        Intent intent = new Intent(this, OverviewActivity.class);
+        startActivity(intent);
 
-        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
-
-        receiptDatabase = new ReceiptDatabase(MainActivity.this);
-
-        populateReceipts();
-
-        newPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchTakePhoto();
-            }
-        });
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            requestPermissions(new String[]{
+//                    Manifest.permission.CAMERA,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+//        }
+//
+//        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
+//
+//        receiptDatabase = new ReceiptDatabase(MainActivity.this);
+//
+//        populateReceipts();
+//
+//        newPhoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dispatchTakePhoto();
+//            }
+//        });
     }
 
     private void populateReceipts() {
