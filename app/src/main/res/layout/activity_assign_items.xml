@@ -20,26 +20,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tabMode="scrollable" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!--TODO: fix the bottom padding hack-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_button_bar"
-        android:foregroundGravity="top"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/padding_8"
-            android:scrollbars="vertical"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:clipToPadding="false"
+        android:paddingBottom="108sp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_button_bar"
@@ -60,7 +49,7 @@
             android:text="@android:string/cancel" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/next"
+            android:id="@+id/nextPage"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_marginTop="@dimen/padding_8"

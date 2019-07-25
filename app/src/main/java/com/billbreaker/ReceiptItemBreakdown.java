@@ -43,4 +43,8 @@ public class ReceiptItemBreakdown {
 
         return peopleString;
     }
+
+    public List<String> getPeople() {
+        return people;
+    }
 }

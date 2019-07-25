@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AssignItemsActivity extends AppCompatActivity {
@@ -34,6 +38,36 @@ public class AssignItemsActivity extends AppCompatActivity {
 
         createRecyclerView();
         createTabLayout();
+
+        MaterialButton nextButton = findViewById(R.id.nextPage);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double subTotal = 0;
+                HashMap<String, Double> pricePerPerson = new HashMap<>();
+                for (int i = 0; i < receiptItemBreakdowns.size(); ++i) {
+                    List<String> people = receiptItemBreakdowns.get(i).getPeople();
+                    subTotal += receiptItemBreakdowns.get(i).getPrice();
+                    double itemPrice = receiptItemBreakdowns.get(i).getPrice() / people.size();
+                    for (String person : people) {
+                        if (pricePerPerson.containsKey(person))
+                            pricePerPerson.put(person, pricePerPerson.get(person) + itemPrice);
+                        else
+                            pricePerPerson.put(person, itemPrice);
+                    }
+                }
+                List<PersonalReceiptItem> personalReceiptItems = new ArrayList<>();
+                for (String name : pricePerPerson.keySet())
+                    personalReceiptItems.add(new PersonalReceiptItem(name, pricePerPerson.get(name)));
+                ReceiptDatabase receiptDatabase = new ReceiptDatabase(AssignItemsActivity.this);
+                long timestamp = System.currentTimeMillis();
+                receiptDatabase.putReceipt(new Receipt(personalReceiptItems, timestamp, subTotal, 0.0, 0.0), timestamp);
+
+                Intent intent = new Intent(AssignItemsActivity.this, OverviewActivity.class);
+                intent.putExtra(OverviewActivity.TIMESTAMP_KEY, timestamp);
+                startActivity(intent);
+            }
+        });
     }
 
     private void createRecyclerView() {
