@@ -35,7 +35,7 @@ class ReceiptDatabase extends SQLiteOpenHelper {
                         + RECEIPT_TABLE_NAME
                         + "("
                         + "RECEIPT BLOB"
-                        + ", TIMESTAMP BIGINT"
+                        + ", TIMESTAMP BIGINT PRIMARY KEY"
                         + ")");
     }
 
@@ -49,11 +49,10 @@ class ReceiptDatabase extends SQLiteOpenHelper {
      * is added here in order to keep track of auto deletion after it expires as well as display the
      * date to the user
      */
-    void putReceipt(List<PersonalReceiptItem> receipt) {
+    void putReceipt(Receipt receipt, long timestamp) {
         SQLiteDatabase db = getWritableDatabase();
         try {
             byte[] receiptBytes = serializeReceipt(receipt);
-            long timestamp = getTimestamp();
 
             db.beginTransaction();
             ContentValues values = new ContentValues();
@@ -69,13 +68,45 @@ class ReceiptDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * Retrieves one receipt with the timestamp as the primary key
+     */
+    Receipt getReceipt(long timestamp) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String selection = "TIMESTAMP = ?";
+        String[] selectionArgs = {
+                String.valueOf(timestamp)
+        };
+
+        Cursor cursor =
+                db.query(RECEIPT_TABLE_NAME, // The table to query
+                        null, // // The values for the WHERE clause
+                        selection, // The columns for the WHERE clause
+                        selectionArgs, // The values for the WHERE clause
+                        null, // don't group the rows
+                        null, // don't filter by row groups
+                        null // The sort order (default ASC)
+                );
+        try {
+            if (cursor.moveToNext()) {
+                byte[] receiptBytes = cursor.getBlob(0);
+                return deserializeReceipt(receiptBytes);
+            } else {
+                throw new RuntimeException("Database should not have two results for a primary key");
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /**
      * Retrieves all receipts for the user
      */
     List<Receipt> getAllReceipts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor =
                 db.query(RECEIPT_TABLE_NAME, // The table to query
-                        null, // // The values for the WHERE clause
+                        null, // The array of columns to return (pass null to get all)
                         null, // The columns for the WHERE clause
                         null, // The values for the WHERE clause
                         null, // don't group the rows
@@ -85,10 +116,9 @@ class ReceiptDatabase extends SQLiteOpenHelper {
         try {
             List<Receipt> receipts = new ArrayList<>();
             while (cursor.moveToNext()) {
-                byte[] personalReceiptItem = cursor.getBlob(0);
-                List<PersonalReceiptItem> personalReceiptItems = deserializeReceipt(personalReceiptItem);
-                long timestamp = cursor.getLong(1);
-                receipts.add(new Receipt(personalReceiptItems, timestamp));
+                byte[] receiptBytes = cursor.getBlob(0);
+                Receipt receipt = deserializeReceipt(receiptBytes);
+                receipts.add(receipt);
             }
             return receipts;
         } finally {
@@ -119,23 +149,15 @@ class ReceiptDatabase extends SQLiteOpenHelper {
      * Retrieve timestamp 90 days ago to be used for deletion
      */
     private long getTimestamp90DaysAgo() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -90);
-        return calendar.getTimeInMillis();
-    }
-
-    /**
-     * Retrieve timestamp for the current time
-     */
-    private long getTimestamp() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         return calendar.getTimeInMillis();
     }
 
     /**
      * Serialize the receipt to be a byte array as SQLite blobs only takes byte arrays
      */
-    private byte[] serializeReceipt(List<PersonalReceiptItem> receipt) {
+    private byte[] serializeReceipt(Receipt receipt) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -150,11 +172,11 @@ class ReceiptDatabase extends SQLiteOpenHelper {
     /**
      * Deserialize the byte array back into a list of personal receipt items
      */
-    private List<PersonalReceiptItem> deserializeReceipt(byte[] receiptBytes) {
+    private Receipt deserializeReceipt(byte[] receiptBytes) {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(receiptBytes);
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            return (List<PersonalReceiptItem>) objectInputStream.readObject();
+            return (Receipt) objectInputStream.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
