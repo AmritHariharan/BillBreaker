@@ -83,11 +83,6 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
 
         recyclerView.setLayoutManager(mLayoutManager);
 
-        // adding inbuilt divider line
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
-        // adding custom divider line with padding 16dp
-        // recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.HORIZONTAL, 16));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         recyclerView.setAdapter(mAdapter);

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
@@ -62,6 +63,8 @@ public class AssignItemsActivity extends AppCompatActivity {
                 ReceiptDatabase receiptDatabase = new ReceiptDatabase(AssignItemsActivity.this);
                 long timestamp = System.currentTimeMillis();
                 receiptDatabase.putReceipt(new Receipt(personalReceiptItems, timestamp, subTotal, 0.0, 0.0), timestamp);
+
+                Toast.makeText(AssignItemsActivity.this, "Saved Receipt", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(AssignItemsActivity.this, OverviewActivity.class);
                 intent.putExtra(OverviewActivity.TIMESTAMP_KEY, timestamp);
