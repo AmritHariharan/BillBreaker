@@ -19,7 +19,7 @@ import java.util.List;
 
 public class AssignItemsActivity extends AppCompatActivity {
 
-    private List<ReceiptItem> receiptItemList = new ArrayList<>();
+    private List<ReceiptItemBreakdown> receiptItemBreakdowns = new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignItemsAdaptor adaptor;
     private TabLayout tabLayout;
@@ -38,12 +38,12 @@ public class AssignItemsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
 
         // TODO: this should all be passed through
-//        receiptItemList = intent.getParcelableArrayListExtra("receiptItems");
-        receiptItemList.add(new ReceiptItem("yeet", 2.31));
-        receiptItemList.add(new ReceiptItem("oh, wow", 23.1));
-        receiptItemList.add(new ReceiptItem("neato", 033.231));
+//        receiptItemBreakdowns = intent.getParcelableArrayListExtra("receiptItems");
+        receiptItemBreakdowns.add(new ReceiptItemBreakdown("yeet", 2.31));
+        receiptItemBreakdowns.add(new ReceiptItemBreakdown("oh, wow", 23.1));
+        receiptItemBreakdowns.add(new ReceiptItemBreakdown("neato", 033.231));
 
-        adaptor = new AssignItemsAdaptor(this, receiptItemList);
+        adaptor = new AssignItemsAdaptor(this, receiptItemBreakdowns);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -55,7 +55,9 @@ public class AssignItemsActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ReceiptItem receiptItem = receiptItemList.get(position);
+                ReceiptItemBreakdown itemBreakdown = receiptItemBreakdowns.get(position);
+                itemBreakdown.editPerson(currentPerson);
+                adaptor.notifyDataSetChanged();
             }
 
             @Override
