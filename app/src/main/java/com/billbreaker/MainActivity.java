@@ -57,12 +57,10 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (Build.VERSION.SDK_INT >= 23) {
-           requestPermissions(new String[]{
-                   Manifest.permission.CAMERA,
-                   Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                   Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-        }
+        requestPermissions(new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
 
         receiptDatabase = new ReceiptDatabase(MainActivity.this);
 

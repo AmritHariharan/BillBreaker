@@ -34,7 +34,7 @@ import java.util.Set;
 import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
 
 public class EditItemsActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
-    private List<ReceiptItem> receiptItemList = new ArrayList<>();
+    private ArrayList<ReceiptItem> receiptItemList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EditItemsAdaptor mAdapter;
     private CoordinatorLayout coordinatorLayout;
@@ -58,11 +58,11 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_items_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Edit Items");
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
         Intent intent = this.getIntent();
@@ -127,7 +127,8 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             }
 
             @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                    float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         };
@@ -135,7 +136,7 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
         // attaching the touch helper to recycler view
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
 
-        final Button addButton = (Button) findViewById(R.id.add_item_button);
+        final Button addButton = findViewById(R.id.add_item_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mAdapter.addItem();
@@ -143,10 +144,13 @@ public class EditItemsActivity extends AppCompatActivity implements RecyclerItem
             }
         });
 
-        final Button saveButton = (Button) findViewById(R.id.save_receipt_button);
+        final Button saveButton = findViewById(R.id.save_receipt_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO: Make this take you to assign items screen
+                Intent intent = new Intent(EditItemsActivity.this, AssignItemsActivity.class);
+                intent.putParcelableArrayListExtra("receiptItems", receiptItemList);
+                startActivity(intent);
             }
         });
     }
