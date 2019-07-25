@@ -4,13 +4,13 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8sp"
-    android:layout_marginStart="8sp"
-    android:layout_marginEnd="8sp"
-    app:cardCornerRadius="12sp"
+    android:layout_marginTop="@dimen/padding_8"
+    android:layout_marginStart="@dimen/padding_8"
+    android:layout_marginEnd="@dimen/padding_8"
+    app:cardCornerRadius="@dimen/padding_8"
     app:cardElevation="2sp"
     app:cardPreventCornerOverlap="true"
-    app:contentPadding="8sp">
+    app:contentPadding="@dimen/padding_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:id="@+id/item_top_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/padding_8"
             app:layout_constraintBottom_toTopOf="@id/people_list_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             android:layout_gravity="start"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/padding_8"
             android:minHeight="@dimen/activity_vertical_margin"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
