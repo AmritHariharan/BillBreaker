@@ -62,15 +62,6 @@ public class MainActivity extends AppCompatActivity implements ReceiptsAdapter.O
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
 
-        FloatingActionButton newPhoto = findViewById(R.id.new_photo);
-        Button b = findViewById(R.id.items_button);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AssignItemsActivity.class));
-            }
-        });
-
         receiptDatabase = new ReceiptDatabase(MainActivity.this);
 
         recyclerView = findViewById(R.id.recyclerView);

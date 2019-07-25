@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -37,11 +39,11 @@ public class AssignItemsActivity extends AppCompatActivity {
     private void createRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view);
 
-        // TODO: this should all be passed through
-//        receiptItemBreakdowns = intent.getParcelableArrayListExtra("receiptItems");
-        receiptItemBreakdowns.add(new ReceiptItemBreakdown("yeet", 2.31));
-        receiptItemBreakdowns.add(new ReceiptItemBreakdown("oh, wow", 23.1));
-        receiptItemBreakdowns.add(new ReceiptItemBreakdown("neato", 033.231));
+        Intent intent = this.getIntent();
+        List<ReceiptItem> receiptItems = intent.getParcelableArrayListExtra("receiptItems");
+        for (int i = 0; i < receiptItems.size(); ++i)
+            receiptItemBreakdowns.add(new ReceiptItemBreakdown(receiptItems.get(i).getName(), receiptItems.get(i).getPrice()));
+        Log.d("EditItemsActivity", receiptItemBreakdowns.toString());
 
         adaptor = new AssignItemsAdaptor(this, receiptItemBreakdowns);
 
