@@ -36,27 +36,28 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal">
+                    android:layout_height="50dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="30dp"
                         android:paddingRight="20dp"
-                        android:layout_weight="1"
-                        android:textSize="18dp"
-                        android:textAlignment="textEnd"
-                        android:text="Tip"/>
+                        android:text="Tip"
+                        android:textAlignment="viewEnd"
+                        android:textSize="18dp" />
 
                     <EditText
-                        android:layout_width="0dp"
+                        android:id="@+id/tipInput"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:inputType="numberDecimal"
-                        android:paddingRight="40dp"
-                        android:singleLine="false"
-                        android:text="8.75" />
+                        android:text="$0.00"
+                        android:inputType="numberDecimal" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
 
                 </LinearLayout>
 
@@ -66,22 +67,25 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:paddingLeft="30dp"
-                        android:textAlignment="textEnd"
                         android:paddingRight="20dp"
-                        android:textSize="18dp"
-                        android:text="Tax"/>
+                        android:text="Tax"
+                        android:textAlignment="viewEnd"
+                        android:textSize="18dp" />
 
                     <EditText
-                        android:layout_width="0dp"
+                        android:id="@+id/taxInput"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:paddingRight="40dp"
-                        android:text="5"
+                        android:text="$0.00"
                         android:inputType="numberDecimal"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
 
                 </LinearLayout>
 
